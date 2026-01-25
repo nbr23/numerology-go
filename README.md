@@ -1,6 +1,6 @@
 # numerology
 
-HTTP API that finds arithmetic expressions equaling a target number from input digits.
+HTTP API that finds arithmetic expressions equaling a target number from input digits (rework of [nbr23/numerology](https://github.com/nbr23/numerology))
 
 ## Usage
 
