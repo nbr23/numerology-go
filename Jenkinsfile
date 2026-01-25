@@ -16,7 +16,7 @@ pipeline {
             }
             steps {
                 sh """
-                    docker run --rm -v \$PWD:/app -w /app golang:1-alpine go test ./...
+                    docker build --target test .
                     """
             }
         }

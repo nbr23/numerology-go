@@ -1,4 +1,4 @@
-FROM --platform=${BUILDOS}/${BUILDARCH} golang:1-alpine AS builder
+FROM --platform=${BUILDOS}/${BUILDARCH} golang:1-alpine AS src
 ARG TARGETARCH
 ARG TARGETOS
 
@@ -6,6 +6,12 @@ WORKDIR /build
 COPY go.* .
 COPY main.go .
 COPY solver ./solver
+
+FROM src AS test
+
+RUN go test ./...
+
+FROM src AS builder
 
 RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -trimpath -o numerology-${TARGETOS}-${TARGETARCH}
 
