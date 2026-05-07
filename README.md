@@ -9,25 +9,31 @@ go build && ./numerology
 ```
 
 ```bash
-curl localhost:8080/23/123456
+curl localhost:8080/api/23/123456
 # 1*2*3*4+5-6
 
-curl localhost:8080/23/2023
+curl localhost:8080/api/23/2023
 # 0*2+23
 
-curl localhost:8080/23
+curl localhost:8080/api/23
 # Uses today's date (DDMMYYYY) as input
 
-curl localhost:8080/42/123456
+curl localhost:8080/api/42/123456
 # Find expression equaling 42
 
-curl localhost:8080/23/123456?format=json
+curl 'localhost:8080/api?target=23&digits=123456'
+# 1*2*3*4+5-6
+
+curl 'localhost:8080/api?target=23'
+# Uses today's date (DDMMYYYY) as input
+
+curl 'localhost:8080/api/23/123456?format=json'
 # {"input":"123456","target":23,"expression":"1*2*3*4+5-6","result":23}
 
-curl localhost:8080/23/123456?format=text
+curl 'localhost:8080/api/23/123456?format=text'
 # Using 123456 to reach 23: 1*2*3*4+5-6 = 23
 
-curl localhost:8080/23?format=text
+curl 'localhost:8080/api/23?format=text'
 # Today is 18012026 and 1+8+0+1+2+0+2+6+3 = 23
 ```
 
@@ -41,12 +47,13 @@ curl localhost:8080/23?format=text
 
 ## API
 
-### `GET /<target>/<input>?format=<format>`
+### `GET /api/<target>/<input>?format=<format>`
+### `GET /api?target=<target>&digits=<input>&format=<format>`
 
-Returns an expression that evaluates to the target using the provided digits.
+Returns an expression that evaluates to the target using the provided digits. Both forms are equivalent — pick whichever is more convenient.
 
 - `target`: The number the expression should equal (required)
-- `input`: Digits to use (optional, defaults to today's date as DDMMYYYY)
+- `input` / `digits`: Digits to use (optional, defaults to today's date as DDMMYYYY)
 - `format`: Output format (optional, defaults to `raw`)
   - `raw`: Expression only (e.g., `1+2*3+4+5+6`)
   - `json`: JSON object with input, target, expression, result

@@ -44,15 +44,19 @@ func TestHandler(t *testing.T) {
 		wantStatus int
 		wantBody   bool
 	}{
-		{"valid input finds solution", "/23/2023", http.StatusOK, true},
-		{"valid input finds solution with letters", "/23/abc2def0ghi2jkl3", http.StatusOK, true},
-		{"impossible input", "/23/19", http.StatusNotFound, false},
-		{"empty path", "/", http.StatusNotFound, false},
-		{"invalid target", "/abc/123", http.StatusBadRequest, false},
-		{"direct 23", "/23/23", http.StatusOK, true},
-		{"complex input", "/23/123456", http.StatusOK, true},
-		{"different target", "/42/123456", http.StatusOK, true},
-		{"target 10", "/10/19", http.StatusOK, true},
+		{"valid input finds solution", "/api/23/2023", http.StatusOK, true},
+		{"valid input finds solution with letters", "/api/23/abc2def0ghi2jkl3", http.StatusOK, true},
+		{"impossible input", "/api/23/19", http.StatusNotFound, false},
+		{"empty path", "/api", http.StatusNotFound, false},
+		{"invalid target", "/api/abc/123", http.StatusBadRequest, false},
+		{"direct 23", "/api/23/23", http.StatusOK, true},
+		{"complex input", "/api/23/123456", http.StatusOK, true},
+		{"different target", "/api/42/123456", http.StatusOK, true},
+		{"target 10", "/api/10/19", http.StatusOK, true},
+		{"query string", "/api?target=23&digits=2023", http.StatusOK, true},
+		{"query string invalid target", "/api?target=abc", http.StatusBadRequest, false},
+		{"query string impossible", "/api?target=23&digits=19", http.StatusNotFound, false},
+		{"query string missing target", "/api", http.StatusNotFound, false},
 	}
 
 	for _, tt := range tests {
@@ -73,7 +77,7 @@ func TestHandler(t *testing.T) {
 }
 
 func TestHandlerResponseContent(t *testing.T) {
-	req := httptest.NewRequest("GET", "/23/23", nil)
+	req := httptest.NewRequest("GET", "/api/23/23", nil)
 	w := httptest.NewRecorder()
 
 	handler(w, req)
@@ -94,7 +98,7 @@ func TestHandlerResponseContent(t *testing.T) {
 }
 
 func TestHandlerExpressionValidity(t *testing.T) {
-	paths := []string{"/23/123456", "/23/2023", "/23/110615", "/23/987654"}
+	paths := []string{"/api/23/123456", "/api/23/2023", "/api/23/110615", "/api/23/987654"}
 
 	for _, path := range paths {
 		req := httptest.NewRequest("GET", path, nil)
@@ -112,16 +116,18 @@ func TestHandlerExpressionValidity(t *testing.T) {
 }
 
 func TestHandlerDefaultDate(t *testing.T) {
-	req := httptest.NewRequest("GET", "/23", nil)
-	w := httptest.NewRecorder()
+	for _, path := range []string{"/api/23", "/api?target=23"} {
+		req := httptest.NewRequest("GET", path, nil)
+		w := httptest.NewRecorder()
 
-	handler(w, req)
+		handler(w, req)
 
-	expectedDate := time.Now().Format("02012006")
-	if w.Code == http.StatusNotFound {
-		t.Logf("No solution found for today's date: %s", expectedDate)
-	} else if w.Code != http.StatusOK {
-		t.Errorf("handler(/23) unexpected status = %d", w.Code)
+		expectedDate := time.Now().Format("02012006")
+		if w.Code == http.StatusNotFound {
+			t.Logf("No solution found for today's date: %s (path %s)", expectedDate, path)
+		} else if w.Code != http.StatusOK {
+			t.Errorf("handler(%s) unexpected status = %d", path, w.Code)
+		}
 	}
 }
 

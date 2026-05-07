@@ -38,36 +38,72 @@ func main() {
 	}
 	corsOrigin := os.Getenv("CORS_ALLOWED_ORIGIN")
 
-	http.HandleFunc("/", handler)
+	http.Handle("/api", withCORS(corsOrigin, http.HandlerFunc(handler)))
+	http.Handle("/api/", withCORS(corsOrigin, http.HandlerFunc(handler)))
 
 	addr := host + ":" + port
 	fmt.Printf("Listening on %s\n", addr)
 	http.ListenAndServe(addr, nil)
 }
 
+func withCORS(origin string, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if origin != "" {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+			w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			if origin != "*" {
+				w.Header().Set("Vary", "Origin")
+			}
+		}
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
-	parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
-	if len(parts) == 0 || parts[0] == "" {
-		http.NotFound(w, r)
-		return
-	}
+	path := strings.Trim(strings.TrimPrefix(r.URL.Path, "/api"), "/")
+	query := r.URL.Query()
 
-	target, err := strconv.Atoi(parts[0])
-	if err != nil {
-		http.Error(w, "invalid target", http.StatusBadRequest)
-		return
-	}
-
-	format := parseFormat(r.URL.Query().Get("format"))
-
+	var target int
 	var input string
 	var userProvidedInput bool
-	if len(parts) > 1 && parts[1] != "" {
-		input = parts[1]
-		userProvidedInput = true
+
+	if path == "" {
+		targetStr := query.Get("target")
+		if targetStr == "" {
+			http.NotFound(w, r)
+			return
+		}
+		t, err := strconv.Atoi(targetStr)
+		if err != nil {
+			http.Error(w, "invalid target", http.StatusBadRequest)
+			return
+		}
+		target = t
+		if d := query.Get("digits"); d != "" {
+			input = d
+			userProvidedInput = true
+		} else {
+			input = time.Now().Format("02012006")
+		}
 	} else {
-		input = time.Now().Format("02012006")
-		userProvidedInput = false
+		parts := strings.Split(path, "/")
+		t, err := strconv.Atoi(parts[0])
+		if err != nil {
+			http.Error(w, "invalid target", http.StatusBadRequest)
+			return
+		}
+		target = t
+		if len(parts) > 1 && parts[1] != "" {
+			input = parts[1]
+			userProvidedInput = true
+		} else {
+			input = time.Now().Format("02012006")
+		}
 	}
 
 	digits := filterDigits(input)
@@ -82,7 +118,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	writeResponse(w, format, input, target, expression, userProvidedInput)
+	writeResponse(w, parseFormat(query.Get("format")), input, target, expression, userProvidedInput)
 }
 
 func parseFormat(s string) outputFormat {
