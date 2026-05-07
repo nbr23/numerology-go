@@ -37,6 +37,7 @@ curl localhost:8080/23?format=text
 |----------|---------|-------------|
 | `HOST` | `0.0.0.0` | Bind address |
 | `PORT` | `8080` | Listen port |
+| `CORS_ALLOWED_ORIGIN` | _(unset)_ | Value for `Access-Control-Allow-Origin`. Set to `*` to allow any origin, or a specific origin (e.g. `https://example.com`). When unset, no CORS headers are emitted. |
 
 ## API
 

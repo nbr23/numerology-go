@@ -36,6 +36,7 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+	corsOrigin := os.Getenv("CORS_ALLOWED_ORIGIN")
 
 	http.HandleFunc("/", handler)
 
