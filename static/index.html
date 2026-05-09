@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Numerology — Digit Proof Generator</title>
+
+<style>
+  :root{
+    --yellow:#ffff00;
+    --yellow-deep:#fff200;
+    --red:#cc0000;
+    --red-bright:#ff0000;
+    --blue:#0000cc;
+    --green:#006600;
+    --maroon:#660000;
+    --black:#000;
+    --hot:#ff00ff;
+    --teal:#008888;
+
+    --g0-fg:#cc0000;  --g0-bg:#ffd6d6;
+    --g1-fg:#0000cc;  --g1-bg:#cfd6ff;
+    --g2-fg:#006600;  --g2-bg:#cfeccf;
+    --g3-fg:#7a00b3;  --g3-bg:#e8d4ff;
+    --g4-fg:#b35a00;  --g4-bg:#ffe0bf;
+    --g5-fg:#005f7a;  --g5-bg:#c9eaf2;
+    --g6-fg:#990066;  --g6-bg:#fbd0e8;
+    --g7-fg:#3a5f00;  --g7-bg:#dfeeb8;
+    --g8-fg:#5c2a00;  --g8-bg:#ecd2b6;
+    --g9-fg:#1f0080;  --g9-bg:#cfc6f0;
+    --g10-fg:#806600; --g10-bg:#ede2a3;
+    --g11-fg:#a02050; --g11-bg:#fbd1de;
+    --g12-fg:#004d4d; --g12-bg:#c2e6e6;
+    --g13-fg:#660033; --g13-bg:#eccadc;
+    --g14-fg:#3a0066; --g14-bg:#dcc4f0;
+    --g15-fg:#666600; --g15-bg:#ebebb0;
+
+    --font-body: "Times New Roman", Times, serif;
+    --font-mono: "Courier New", Courier, monospace;
+  }
+
+  html,body{margin:0;padding:0}
+  body{
+    font-family: var(--font-body);
+    color: var(--black);
+    background:
+      linear-gradient(180deg,
+        #2540a0 0%,   #2540a0 10%,
+        #2a3d9e 10%,  #2a3d9e 20%,
+        #303a9d 20%,  #303a9d 30%,
+        #35379b 30%,  #35379b 40%,
+        #3a349a 40%,  #3a349a 50%,
+        #403198 50%,  #403198 60%,
+        #452e96 60%,  #452e96 70%,
+        #4a2b95 70%,  #4a2b95 80%,
+        #502893 80%,  #502893 90%,
+        #552591 90%,  #552591 100%);
+    background-attachment: fixed;
+    min-height:100vh;
+    overflow-x:hidden;
+    position: relative;
+  }
+
+  .cosmos{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .cosmos > div{ position: absolute; inset: 0; }
+
+  .stars-static{
+    background-image:
+      radial-gradient(1px 1px at 2% 11%,  #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 3% 46%,  #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 4% 73%,  #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 5% 27%,  #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 6% 84%,  #d8e6ff 100%, transparent 100%),
+      radial-gradient(1px 1px at 7% 12%,  #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 8% 59%,  #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 9% 53%,  #d8e6ff 100%, transparent 100%),
+      radial-gradient(1px 1px at 10% 36%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 11% 78%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 12% 5%,  #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 13% 4%,  #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 14% 41%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 15% 95%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 16% 19%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 17% 65%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 18% 48%, #d8e6ff 100%, transparent 100%),
+      radial-gradient(1px 1px at 19% 22%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 19% 67%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 20% 33%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 21% 90%, #d8e6ff 100%, transparent 100%),
+      radial-gradient(1px 1px at 22% 11%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 23% 7%,  #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 24% 50%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 25% 35%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 26% 95%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 27% 56%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 28% 23%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 29% 74%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 30% 9%,  #d8e6ff 100%, transparent 100%),
+      radial-gradient(1px 1px at 31% 24%, #d8e6ff 100%, transparent 100%),
+      radial-gradient(1px 1px at 32% 52%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 33% 88%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 34% 13%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 35% 76%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 36% 47%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 37% 32%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 38% 6%,  #d8e6ff 100%, transparent 100%),
+      radial-gradient(1px 1px at 39% 71%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 40% 56%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 41% 30%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 41% 47%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 42% 83%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 43% 91%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 44% 81%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 45% 26%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 46% 14%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 47% 64%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 48% 53%, #d8e6ff 100%, transparent 100%),
+      radial-gradient(1px 1px at 49% 4%,  #d8e6ff 100%, transparent 100%),
+      radial-gradient(1px 1px at 50% 78%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 51% 39%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 52% 12%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 53% 58%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 54% 87%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 55% 31%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 56% 21%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 56% 38%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 57% 67%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 58% 75%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 59% 5%,  #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 60% 70%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 61% 9%,  #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 62% 51%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 63% 35%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 64% 86%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 65% 27%, #d8e6ff 100%, transparent 100%),
+      radial-gradient(1px 1px at 66% 47%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 67% 11%, #e0d4ff 100%, transparent 100%),
+      radial-gradient(1px 1px at 67% 60%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 68% 89%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 69% 42%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 70% 6%,  #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 71% 79%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 72% 56%, #d8e6ff 100%, transparent 100%),
+      radial-gradient(1px 1px at 73% 33%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 74% 17%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 75% 70%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 76% 66%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 77% 24%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 78% 4%,  #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 79% 73%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 80% 41%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 81% 50%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 82% 38%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 83% 14%, #d8e6ff 100%, transparent 100%),
+      radial-gradient(1px 1px at 84% 92%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 85% 56%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 86% 17%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 87% 61%, #d8e6ff 100%, transparent 100%),
+      radial-gradient(1px 1px at 88% 31%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 89% 28%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 90% 75%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 91% 9%,  #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 92% 49%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 93% 64%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 94% 7%,  #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 95% 80%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 96% 92%, #d8e6ff 100%, transparent 100%),
+      radial-gradient(1px 1px at 97% 22%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 98% 36%, #fff 100%, transparent 100%),
+      radial-gradient(1px 1px at 99% 58%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 11% 28%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 22% 84%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 35% 15%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 49% 18%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 64% 53%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 77% 55%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 88% 84%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 8% 90%,  #d8e6ff 100%, transparent 100%),
+      radial-gradient(2px 2px at 14% 17%, #ffd86b 100%, transparent 100%),
+      radial-gradient(2px 2px at 31% 60%, #ffe7a0 100%, transparent 100%),
+      radial-gradient(2px 2px at 70% 22%, #ffe7a0 100%, transparent 100%),
+      radial-gradient(2px 2px at 85% 71%, #ffd86b 100%, transparent 100%),
+      radial-gradient(2px 2px at 42% 45%, #ffb0d8 100%, transparent 100%),
+      radial-gradient(2px 2px at 75% 95%, #ffb0d8 100%, transparent 100%),
+      radial-gradient(2px 2px at 27% 38%, #b0e8ff 100%, transparent 100%),
+      radial-gradient(2px 2px at 60% 11%, #b0e8ff 100%, transparent 100%),
+      radial-gradient(2px 2px at 6% 14%,  #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 18% 72%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 39% 88%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 53% 24%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 91% 41%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 96% 17%, #fff 100%, transparent 100%);
+  }
+
+  .stars-cross{
+    background-image:
+      radial-gradient(5px 1px at 18% 23%, #fff 100%, transparent 100%),
+      radial-gradient(1px 5px at 18% 23%, #fff 100%, transparent 100%),
+      radial-gradient(5px 1px at 73% 14%, #ffe7a0 100%, transparent 100%),
+      radial-gradient(1px 5px at 73% 14%, #ffe7a0 100%, transparent 100%),
+      radial-gradient(5px 1px at 47% 62%, #fff 100%, transparent 100%),
+      radial-gradient(1px 5px at 47% 62%, #fff 100%, transparent 100%),
+      radial-gradient(5px 1px at 88% 78%, #fff 100%, transparent 100%),
+      radial-gradient(1px 5px at 88% 78%, #fff 100%, transparent 100%),
+      radial-gradient(5px 1px at 9% 82%,  #ffb0d8 100%, transparent 100%),
+      radial-gradient(1px 5px at 9% 82%,  #ffb0d8 100%, transparent 100%),
+      radial-gradient(5px 1px at 33% 41%, #fff 100%, transparent 100%),
+      radial-gradient(1px 5px at 33% 41%, #fff 100%, transparent 100%),
+      radial-gradient(5px 1px at 62% 91%, #b0e8ff 100%, transparent 100%),
+      radial-gradient(1px 5px at 62% 91%, #b0e8ff 100%, transparent 100%);
+  }
+
+  .stars-twinkle-a{
+    background-image:
+      radial-gradient(2px 2px at 17% 23%, #fff 100%, transparent 100%),
+      radial-gradient(3px 3px at 72% 13%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 47% 62%, #cfe4ff 100%, transparent 100%),
+      radial-gradient(3px 3px at 88% 79%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 9% 83%,  #fff 100%, transparent 100%),
+      radial-gradient(3px 3px at 35% 41%, #e8d4ff 100%, transparent 100%),
+      radial-gradient(2px 2px at 63% 28%, #fff 100%, transparent 100%),
+      radial-gradient(3px 3px at 28% 8%,  #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 81% 49%, #ffe7a0 100%, transparent 100%),
+      radial-gradient(3px 3px at 53% 90%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 19% 56%, #fff 100%, transparent 100%),
+      radial-gradient(3px 3px at 95% 20%, #ffb0d8 100%, transparent 100%);
+    animation: twinkle-a 2.6s steps(3, end) infinite alternate;
+  }
+
+  .stars-twinkle-b{
+    background-image:
+      radial-gradient(2px 2px at 12% 50%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 38% 28%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 56% 16%, #cfe4ff 100%, transparent 100%),
+      radial-gradient(2px 2px at 78% 64%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 24% 76%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 91% 36%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 7% 30%,  #ffe7a0 100%, transparent 100%),
+      radial-gradient(2px 2px at 65% 81%, #ffb0d8 100%, transparent 100%),
+      radial-gradient(2px 2px at 44% 53%, #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 86% 9%,  #fff 100%, transparent 100%),
+      radial-gradient(2px 2px at 3% 64%,  #b0e8ff 100%, transparent 100%),
+      radial-gradient(2px 2px at 33% 95%, #fff 100%, transparent 100%);
+    animation: twinkle-b 4.3s steps(3, end) infinite alternate-reverse;
+  }
+
+  .stars-pulse{
+    background-image:
+      radial-gradient(4px 4px at 23% 17%, #fff    20%, rgba(255,255,255,.4) 50%, transparent 85%),
+      radial-gradient(5px 5px at 81% 38%, #fff    20%, rgba(255,255,255,.4) 50%, transparent 85%),
+      radial-gradient(4px 4px at 56% 73%, #ffe7a0 20%, rgba(255,231,160,.4) 50%, transparent 85%),
+      radial-gradient(4px 4px at 13% 64%, #fff    20%, rgba(255,255,255,.4) 50%, transparent 85%),
+      radial-gradient(5px 5px at 91% 11%, #ffb0d8 20%, rgba(255,176,216,.4) 50%, transparent 85%),
+      radial-gradient(4px 4px at 38% 90%, #b0e8ff 20%, rgba(176,232,255,.4) 50%, transparent 85%);
+    animation: pulse 6s ease-in-out infinite;
+  }
+
+  .shooting-star{
+    position: absolute;
+    width: 140px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.7) 30%, #fff 70%, transparent);
+    filter: blur(.4px) drop-shadow(0 0 6px #fff);
+    transform-origin: left center;
+    opacity: 0;
+    border-radius: 2px;
+  }
+  .shooting-star.a{ top: 14%; left: -160px; animation: shoot-a 60s ease-in infinite; }
+
+  .dolphin{
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
+    line-height: 1;
+    user-select: none;
+    will-change: transform;
+    filter: drop-shadow(0 0 6px rgba(180,220,255,.5));
+  }
+
+  @keyframes twinkle-a{
+    0%   { opacity: .35; filter: brightness(1); }
+    50%  { opacity: 1;   filter: brightness(1.7); }
+    100% { opacity: .55; filter: brightness(1.1); }
+  }
+  @keyframes twinkle-b{
+    0%   { opacity: .25; filter: brightness(1); }
+    100% { opacity: 1;   filter: brightness(1.5); }
+  }
+  @keyframes pulse{
+    0%, 100% { opacity: .35; filter: brightness(1)   drop-shadow(0 0 2px #fff); }
+    50%      { opacity: .7;  filter: brightness(1.3) drop-shadow(0 0 4px #fff); }
+  }
+  @keyframes shoot-a{
+    0%, 97.5% { opacity: 0; transform: translate(0, 0) rotate(18deg); }
+    98%       { opacity: 1; transform: translate(0, 0) rotate(18deg); }
+    99.5%     { opacity: 1; transform: translate(120vw, 35vh) rotate(18deg); }
+    100%      { opacity: 0; transform: translate(120vw, 35vh) rotate(18deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .stars-twinkle-a, .stars-twinkle-b, .stars-pulse, .shooting-star, .dolphin{
+      animation: none;
+    }
+    .dolphin{ display:none; }
+  }
+
+  @keyframes blink23 { 50%{ opacity:0; } }
+  .blink{ animation: blink23 1s step-end infinite; }
+
+  .col{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 18px 16px 60px;
+    display:flex;
+    flex-direction:column;
+    gap: 18px;
+    align-items:stretch;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero{
+    text-align:center;
+    border: 6px ridge var(--red);
+    background:
+      radial-gradient(ellipse at top, #fffac0, transparent 70%),
+      var(--yellow);
+    padding: 18px 12px 14px;
+    box-shadow: inset 0 0 0 2px #000;
+  }
+  .hero h1{
+    font-family: var(--font-body);
+    font-size: 56px;
+    line-height: 1;
+    margin: 0;
+    color: var(--red);
+    text-shadow:
+      2px 2px 0 #000,
+      4px 4px 0 #ffcc00;
+    letter-spacing: .02em;
+    font-weight: 900;
+  }
+  .hero .sub{
+    font-style: italic;
+    margin-top: 6px;
+    font-size: 17px;
+    color: #222;
+  }
+  .counter-row{
+    display:flex; gap:8px; align-items:center; justify-content:center;
+    flex-wrap:wrap;
+    margin-top: 8px;
+    font-size: 11px;
+    color:#666;
+  }
+  .counter{
+    display:inline-flex; align-items:center; gap:2px;
+    background: #000;
+    border: 2px outset #888;
+    padding: 2px 4px;
+  }
+  .digit7{
+    width:11px; height:16px;
+    background: #1a0000;
+    color:#ff2a2a;
+    text-align:center;
+    font: bold 13px/16px var(--font-mono);
+    text-shadow: 0 0 4px #ff2a2a, 0 0 1px #fff5f5;
+    border: 1px solid #330000;
+  }
+  .counter-lbl{ color:#666; letter-spacing:.04em; }
+
+  .card{
+    background: #ffffff;
+    border: 4px ridge #c0c0c0;
+    padding: 12px 16px;
+    box-shadow: 4px 4px 0 rgba(0,0,0,.25);
+  }
+  .card.banner{
+    border: 4px ridge var(--red);
+    background: #fffce6;
+  }
+  .card.evidence{
+    position: relative;
+    border: 4px ridge var(--green);
+    outline: 2px dashed var(--maroon);
+    outline-offset: 3px;
+    color: #dceadc;
+    background:
+      repeating-linear-gradient(0deg,
+        rgba(180,255,200,.06) 0 1px, transparent 1px 3px),
+      #0a1a10;
+  }
+  .card.evidence .res-line .lbl{ color: #fff; }
+  .card.evidence .op{ color: #fff; }
+  .card.evidence .align-warn{ color: #ff9999; }
+  .card.evidence::before{
+    content: "★ 23 ★";
+    position: absolute;
+    top: 10px;
+    right: -10px;
+    transform: rotate(-9deg);
+    border: 2px solid var(--red);
+    color: var(--red);
+    font: 900 13px/1 var(--font-mono);
+    letter-spacing: .15em;
+    padding: 4px 8px;
+    background: rgba(255,255,200,.88);
+    pointer-events: none;
+    opacity: .95;
+    z-index: 2;
+  }
+  .card.error{
+    border: 3px dashed var(--red);
+    background: #fff0f0;
+  }
+  .card.dotted{
+    border: 2px dotted #000;
+    background: #fffce6;
+  }
+  .card-title{
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--red);
+    letter-spacing: .04em;
+    font-size: 18px;
+    margin: 0 0 8px;
+  }
+  .card-title .arr{ color:#000; }
+
+  .form-card{
+    background:
+      repeating-linear-gradient(0deg,
+        #fffce6 0 24px, #fff8c2 24px 25px);
+    border: 4px ridge #888;
+    padding: 14px;
+  }
+  .form-tbl{
+    margin: 0 auto;
+    border-collapse: separate;
+    border-spacing: 6px 8px;
+  }
+  .form-tbl td{ vertical-align: middle; }
+  .form-tbl label{
+    font-weight:bold;
+    text-transform:uppercase;
+    color: var(--maroon);
+    letter-spacing:.05em;
+    text-align:right;
+    padding-right: 6px;
+    font-size: 15px;
+  }
+  .form-tbl input{
+    font: 18px var(--font-mono);
+    padding: 6px 8px;
+    border: 2px inset #aaa;
+    background: #fff;
+    width: 280px;
+    box-sizing: border-box;
+  }
+  .form-tbl input.sm{ width: 90px; text-align:center; }
+  .form-tbl .help{
+    font-size: 11px;
+    color: #555;
+    font-family: var(--font-mono);
+    margin-top: 2px;
+    display:block;
+  }
+
+  .reveal-row{
+    text-align:center;
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight:bold;
+    color: var(--red);
+  }
+  .reveal-arrows{ color:#000; font-family: var(--font-mono); margin: 0 8px; }
+  .btn-reveal{
+    font-family: var(--font-body);
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: .04em;
+    color: #fff;
+    background:
+      linear-gradient(#a64dff, #6a00cc 60%, #3a0080);
+    border: 4px outset #c79bff;
+    padding: 8px 22px;
+    cursor: pointer;
+    text-shadow: 1px 1px 0 #000;
+    text-transform: uppercase;
+  }
+  .btn-reveal:active{ border-style: inset; }
+  .btn-reveal[disabled]{ opacity:.6; cursor: wait; }
+
+  .result-headline{
+    text-align:center;
+    text-transform:uppercase;
+    font-weight:bold;
+    font-family: var(--font-mono);
+    color: var(--maroon);
+    background: var(--yellow);
+    border-top: 2px dashed var(--green);
+    border-bottom: 2px dashed var(--green);
+    letter-spacing: .1em;
+    padding: 5px 0;
+    margin: -12px -16px 12px;
+  }
+  .res-line{
+    text-align:center;
+    font: bold 22px/1.4 var(--font-mono);
+    word-break: break-word;
+    margin: 6px 0;
+  }
+  .res-line.input-line{ font-size:20px; letter-spacing:.05em; }
+  .res-line .lbl{ color:#000; margin-right:6px; }
+  .res-line .equals{
+    color: var(--red);
+    margin: 0 8px;
+  }
+  .res-line .final{
+    color: var(--red);
+    font-size: 28px;
+    background: var(--yellow);
+    border: 2px solid var(--red);
+    padding: 0 10px;
+    margin-left: 4px;
+  }
+  .tok{
+    display: inline-block;
+    padding: 1px 5px;
+    margin: 0 1px;
+    border: 1px dotted currentColor;
+    border-radius: 0;
+    font-weight: bold;
+  }
+  .op{
+    display:inline-block;
+    margin: 0 3px;
+    color: #000;
+    font-weight: bold;
+  }
+  .align-warn{
+    text-align:center;
+    font-size:12px;
+    color:#660000;
+    margin-top:6px;
+    font-style:italic;
+  }
+
+  .fact .card-title{ color: var(--maroon); }
+  .fact-body{
+    font-style: italic;
+    text-align:center;
+    font-size: 16px;
+    line-height: 1.5;
+    padding: 4px 8px 6px;
+  }
+  .fact-cite{
+    text-align:center;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color:#555;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+  }
+  .book .head{
+    background: var(--maroon);
+    color: #fff;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    padding: 6px 10px;
+    font-weight:bold;
+    display:flex; justify-content:space-between; align-items:center;
+    border: 2px outset #884444;
+    margin: -12px -16px 10px;
+    font-size: 15px;
+  }
+  .book .head a{
+    color: #ffcccc;
+    font-size: 12px;
+    text-transform: lowercase;
+  }
+  .ev-row{
+    display: grid;
+    grid-template-columns: 26px 1fr auto;
+    align-items: baseline;
+    gap: 8px;
+    padding: 6px 4px;
+    border-bottom: 1px dotted #888;
+    font-size: 14px;
+    word-break: break-word;
+  }
+  .ev-row:last-child{ border-bottom:0; }
+  .ev-num{
+    font-family: var(--font-mono);
+    color: var(--maroon);
+    font-weight:bold;
+    text-align:right;
+  }
+  .ev-expr{ font-family: var(--font-mono); }
+  .ev-expr .ev-input{ color: var(--maroon); }
+  .ev-expr .arrow{ color: var(--red); margin: 0 4px; }
+  .ev-meta{
+    font-family: var(--font-mono);
+    color: #666;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .empty-page{
+    border: 2px dotted #000;
+    background:
+      repeating-linear-gradient(0deg,
+        #fff 0 22px, #f4f0d6 22px 23px);
+    padding: 22px;
+    text-align:center;
+    font-style: italic;
+    color: #555;
+    font-size: 15px;
+  }
+  .empty-page .quill{ font-size: 30px; display:block; margin-bottom:6px; }
+
+  .err-title{
+    color: var(--red);
+    font-weight:bold;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin: 0 0 4px;
+  }
+  .err-msg{
+    font-family: var(--font-mono);
+    background: #fff;
+    border: 1px dashed var(--red);
+    padding: 4px 6px;
+    font-size: 13px;
+    color: #660000;
+    word-break: break-word;
+  }
+
+  footer{
+    text-align:center;
+    border-top: 3px double #d8e6ff;
+    padding-top: 10px;
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #e8e0ff;
+  }
+  @media (max-width: 600px){
+    .col{ padding: 12px 10px 60px; gap:14px; }
+    .hero h1{ font-size: 38px; text-shadow: 2px 2px 0 #000, 3px 3px 0 #ffcc00; }
+    .hero .sub{ font-size: 15px; }
+    .form-tbl, .form-tbl tbody, .form-tbl tr, .form-tbl td{
+      display:block; width:100%;
+    }
+    .form-tbl tr{ margin-bottom: 6px; }
+    .form-tbl td{ padding:0; }
+    .form-tbl label{
+      text-align:left; padding-right:0; display:block; margin-top:6px;
+    }
+    .form-tbl input,
+    .form-tbl input.sm{ width: 100%; box-sizing: border-box; }
+    .res-line{ font-size: 17px; }
+    .res-line.input-line{ font-size: 16px; }
+    .res-line .final{ font-size: 22px; }
+    .ev-row{
+      grid-template-columns: 22px 1fr;
+    }
+    .ev-meta{
+      grid-column: 1 / -1;
+      text-align: right;
+    }
+    .card-title{ font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cosmos" aria-hidden="true">
+  <div class="stars-static"></div>
+  <div class="stars-cross"></div>
+  <div class="stars-twinkle-a"></div>
+  <div class="stars-twinkle-b"></div>
+  <div class="stars-pulse"></div>
+  <div class="shooting-star a"></div>
+  <div class="dolphins" id="dolphins"></div>
+</div>
+
+<div class="col">
+  <div class="hero">
+    <h1>NUMEROLOGY</h1>
+    <div class="sub">in the numbers lies the truth</div>
+  </div>
+
+  <div class="card form-card" role="region" aria-label="proof generator form">
+    <form id="proof-form" action="/api" method="get">
+      <table class="form-tbl"><tbody>
+        <tr>
+          <td><label for="digits">INPUT:</label></td>
+          <td>
+            <input id="digits" name="digits" inputmode="numeric" maxlength="20" autocomplete="off" />
+          </td>
+        </tr>
+        <tr>
+          <td><label for="target">TARGET:</label></td>
+          <td>
+            <input id="target" name="target" class="sm" inputmode="numeric" maxlength="6" value="23" autocomplete="off" />
+          </td>
+        </tr>
+      </tbody></table>
+      <input type="hidden" name="format" value="text" />
+      <div class="reveal-row">
+        <span class="reveal-arrows">►►►</span>
+        <button class="btn-reveal" type="submit" id="btn-reveal">CRUNCH</button>
+        <span class="reveal-arrows">ᐊᐊᐊ</span>
+      </div>
+    </form>
+  </div>
+
+  <div id="error-slot"></div>
+  <div id="result-slot"></div>
+
+  <div class="card dotted fact">
+    <h3 class="card-title">
+      <span class="arr">★</span> FACT OF THE MOMENT <span class="arr">★</span>
+    </h3>
+    <div class="fact-body" id="fact-body"></div>
+    <div class="fact-cite" id="fact-cite"></div>
+  </div>
+
+  <div class="card book">
+    <div class="head">
+      <span>📜 PROOF HISTORY 📜</span>
+      <a href="#" id="burn-evidence" style="display:none">[clear history]</a>
+    </div>
+    <div id="history-slot"></div>
+  </div>
+
+  <footer>
+    <div class="counter-row">
+      <span id="visitor-counter" class="counter" aria-label="visitor counter"></span>
+    </div>
+  </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

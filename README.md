@@ -1,11 +1,13 @@
 # numerology
 
-HTTP API that finds arithmetic expressions equaling a target number from input digits (rework of [nbr23/numerology](https://github.com/nbr23/numerology))
+HTTP API that finds arithmetic expressions equaling a target number from input digits (rework of [nbr23/numerology](https://github.com/nbr23/numerology)). The static frontend in `static/` is embedded into the binary and served at `/`.
 
 ## Usage
 
 ```bash
 go build && ./numerology
+# Frontend at http://localhost:8080/
+# API at http://localhost:8080/api
 ```
 
 ```bash
@@ -44,6 +46,7 @@ curl 'localhost:8080/api/23?format=text'
 | `HOST` | `0.0.0.0` | Bind address |
 | `PORT` | `8080` | Listen port |
 | `CORS_ALLOWED_ORIGIN` | _(unset)_ | Value for `Access-Control-Allow-Origin`. Set to `*` to allow any origin, or a specific origin (e.g. `https://example.com`). When unset, no CORS headers are emitted. |
+| `DISABLE_FRONTEND` | _(unset)_ | When set (any non-empty value), the embedded static frontend is not served and only `/api` is exposed. |
 
 ## API
 

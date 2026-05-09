@@ -6,6 +6,7 @@ WORKDIR /build
 COPY go.* .
 COPY main.go .
 COPY solver ./solver
+COPY static ./static
 
 FROM src AS test
 

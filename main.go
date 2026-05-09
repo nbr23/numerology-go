@@ -1,8 +1,10 @@
 package main
 
 import (
+	"embed"
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"net/http"
 	"os"
 	"strconv"
@@ -11,6 +13,9 @@ import (
 
 	"numerology/solver"
 )
+
+//go:embed static
+var staticFS embed.FS
 
 type outputFormat string
 
@@ -40,6 +45,14 @@ func main() {
 
 	http.Handle("/api", withCORS(corsOrigin, http.HandlerFunc(handler)))
 	http.Handle("/api/", withCORS(corsOrigin, http.HandlerFunc(handler)))
+
+	if os.Getenv("DISABLE_FRONTEND") == "" {
+		staticRoot, err := fs.Sub(staticFS, "static")
+		if err != nil {
+			panic(err)
+		}
+		http.Handle("/", http.FileServer(http.FS(staticRoot)))
+	}
 
 	addr := host + ":" + port
 	fmt.Printf("Listening on %s\n", addr)
