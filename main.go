@@ -133,6 +133,11 @@ func parseFormat(s string) outputFormat {
 }
 
 func writeResponse(w http.ResponseWriter, format outputFormat, input string, target int, expression string, userProvidedInput bool) {
+	if userProvidedInput {
+		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+	} else {
+		w.Header().Set("Cache-Control", fmt.Sprintf("public, max-age=%d", secondsUntilMidnight()))
+	}
 	switch format {
 	case formatJSON:
 		w.Header().Set("Content-Type", "application/json")
@@ -154,6 +159,12 @@ func writeResponse(w http.ResponseWriter, format outputFormat, input string, tar
 		w.Header().Set("Content-Type", "text/plain")
 		fmt.Fprint(w, expression)
 	}
+}
+
+func secondsUntilMidnight() int {
+	now := time.Now()
+	tomorrow := time.Date(now.Year(), now.Month(), now.Day()+1, 0, 0, 0, 0, now.Location())
+	return int(tomorrow.Sub(now).Seconds())
 }
 
 func filterDigits(s string) []int {
