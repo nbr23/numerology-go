@@ -654,6 +654,88 @@
     line-height: 1.6;
     color: #e8e0ff;
   }
+  .fork-star{
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    width: 130px;
+    height: 130px;
+    z-index: 5;
+    text-decoration: none;
+    display: grid;
+    place-items: center;
+    transform: rotate(14deg);
+    animation: fork-wobble 3.2s ease-in-out infinite;
+    filter: drop-shadow(2px 3px 0 rgba(0,0,0,.35));
+  }
+  .fork-star .burst,
+  .fork-star .burst-inner{
+    position: absolute;
+    inset: 0;
+    clip-path: polygon(
+      50% 0%, 56% 16%, 70% 6%, 67% 24%, 84% 20%, 74% 34%,
+      94% 38%, 78% 50%, 96% 62%, 76% 62%, 86% 80%, 68% 70%,
+      72% 94%, 56% 78%, 50% 100%, 44% 78%, 28% 94%, 32% 70%,
+      14% 80%, 24% 62%, 4% 62%, 22% 50%, 6% 38%, 26% 34%,
+      16% 20%, 33% 24%, 30% 6%, 44% 16%
+    );
+  }
+  .fork-star .burst{
+    background: #ff0000;
+  }
+  .fork-star .burst-inner{
+    inset: 8px;
+    background: var(--yellow);
+  }
+  .fork-star .lbl{
+    position: relative;
+    text-align: center;
+    font-family: var(--font-body);
+    font-weight: 900;
+    font-size: 12px;
+    line-height: 1.05;
+    color: #cc0000;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    text-shadow: 1px 1px 0 #ffcc00;
+    padding: 0 4px;
+    max-width: 70%;
+  }
+  .fork-star .lbl .on{
+    display:block;
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 9px;
+    color: #000;
+    margin-top: 1px;
+    text-shadow: none;
+    text-transform: lowercase;
+  }
+  .fork-star .lbl .gh{
+    display:block;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: #000;
+    margin-top: 1px;
+    letter-spacing: .05em;
+    text-shadow: none;
+  }
+  .fork-star:hover{ animation-play-state: paused; }
+  @keyframes fork-wobble{
+    0%, 100% { transform: rotate(14deg) scale(1); }
+    50%      { transform: rotate(10deg) scale(1.06); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .fork-star{ animation: none; }
+  }
+  @media (max-width: 600px){
+    .fork-star{
+      width: 92px; height: 92px;
+      top: 8px; right: 6px;
+    }
+    .fork-star .lbl{ font-size: 9px; }
+    .fork-star .lbl .gh{ font-size: 7px; }
+  }
   @media (max-width: 600px){
     .col{ padding: 12px 10px 60px; gap:14px; }
     .hero h1{ font-size: 38px; text-shadow: 2px 2px 0 #000, 3px 3px 0 #ffcc00; }
@@ -683,6 +765,12 @@
 </style>
 </head>
 <body>
+
+<a class="fork-star" href="https://github.com/nbr23/numerology-go" target="_blank" rel="noopener noreferrer" aria-label="Fork me on GitHub">
+  <span class="burst" aria-hidden="true"></span>
+  <span class="burst-inner" aria-hidden="true"></span>
+  <span class="lbl">Fork me<span class="on">on</span><span class="gh">github!</span></span>
+</a>
 
 <div class="cosmos" aria-hidden="true">
   <div class="stars-static"></div>
