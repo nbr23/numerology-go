@@ -11,12 +11,23 @@ function groupColor(idx) {
 	return { fg: `var(--${k}-fg)`, bg: `var(--${k}-bg)` };
 }
 
+function dedupeHistory(h) {
+	const seen = new Set();
+	const out = [];
+	for (const e of h) {
+		const k = `${e.input}|${e.target}|${e.expression}`;
+		if (seen.has(k)) continue;
+		seen.add(k);
+		out.push(e);
+	}
+	return out;
+}
 function loadHistory() {
 	try {
 		const raw = localStorage.getItem(HISTORY_KEY);
 		if (!raw) return [];
 		const v = JSON.parse(raw);
-		return Array.isArray(v) ? v : [];
+		return Array.isArray(v) ? dedupeHistory(v) : [];
 	} catch (_) { return []; }
 }
 function saveHistory(h) {
@@ -277,10 +288,13 @@ async function submit() {
 			id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 		};
 		state.result = r;
-		state.history = [{
+		const entry = {
 			id: r.id, input: r.input, target: r.target,
 			expression: r.expression, value: r.value, when: r.when,
-		}, ...state.history].slice(0, HISTORY_CAP);
+		};
+		const dupKey = (e) => `${e.input}|${e.target}|${e.expression}`;
+		const key = dupKey(entry);
+		state.history = [entry, ...state.history.filter((e) => dupKey(e) !== key)].slice(0, HISTORY_CAP);
 		saveHistory(state.history);
 
 		renderResult();
