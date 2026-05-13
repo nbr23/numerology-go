@@ -1,14 +1,3 @@
-const FACTS_23 = [
-	{ text: "23 IS PRIME. SO ARE 2 AND 3.", cite: "NUMBER THEORY" },
-	{ text: "EARTH'S AXIS IS TILTED ABOUT 23.5 DEGREES.", cite: "ASTRONOMY" },
-	{ text: "HUMAN DNA IS ORGANIZED INTO 23 PAIRS OF CHROMOSOMES.", cite: "CELL BIOLOGY" },
-	{ text: "BIRTHDAY PARADOX: WITH 23 PEOPLE IN A ROOM, THERE'S A >50% CHANCE TWO SHARE A BIRTHDAY.", cite: "PROBABILITY" },
-	{ text: "JULIUS CAESAR WAS REPORTEDLY STABBED 23 TIMES.", cite: "SUETONIUS" },
-	{ text: "MICHAEL JORDAN WORE 23.", cite: "BASKETBALL" },
-	{ text: "23 IS THE SMALLEST PRIME WHOSE DIGITS ARE BOTH PRIME.", cite: "NUMBER THEORY" },
-	{ text: "THE LATIN ALPHABET HAS 23 LETTERS — NO J, U, OR W.", cite: "ETYMOLOGY" },
-];
-
 const HISTORY_KEY = "numerology.history.v1";
 const HISTORY_CAP = 50;
 const DEFAULT_API_BASE = "/api";
@@ -138,7 +127,6 @@ function buildResultColoring(tokens, input) {
 
 const state = {
 	history: loadHistory(),
-	factIdx: Math.floor(Math.random() * FACTS_23.length),
 	result: null,
 	error: null,
 	busy: false,
@@ -166,13 +154,6 @@ function el(tag, attrs, ...children) {
 	}
 	return n;
 }
-
-function renderFact() {
-	const f = FACTS_23[state.factIdx];
-	$("#fact-body").textContent = `“${f.text}”`;
-	$("#fact-cite").textContent = `— ${f.cite}`;
-}
-
 
 function renderError() {
 	const slot = $("#error-slot");
@@ -406,7 +387,6 @@ function scheduleDolphin() {
 document.addEventListener("DOMContentLoaded", () => {
 	$("#digits").value = defaultDateDigits();
 
-	renderFact();
 	renderBook();
 	renderVisitorCounter();
 
