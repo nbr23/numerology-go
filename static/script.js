@@ -39,8 +39,8 @@ function nowStamp() {
 	return `${d.getFullYear()}.${pad2(d.getMonth() + 1)}.${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
 }
 
-// Locale-aware default date string. US → MMDDYYYY, else DDMMYYYY.
-function defaultDateDigits() {
+// Locale-aware default date string. US → MM/DD/YYYY, else DD/MM/YYYY.
+function defaultDateString() {
 	try {
 		const parts = new Intl.DateTimeFormat(undefined, {
 			year: "numeric", month: "2-digit", day: "2-digit",
@@ -54,12 +54,16 @@ function defaultDateDigits() {
 			.map(p => p.type);
 		const mIdx = order.indexOf("month");
 		const dIdx = order.indexOf("day");
-		if (mIdx < dIdx) return `${map.month}${map.day}${map.year}`;
-		return `${map.day}${map.month}${map.year}`;
+		if (mIdx < dIdx) return `${map.month}/${map.day}/${map.year}`;
+		return `${map.day}/${map.month}/${map.year}`;
 	} catch (_) {
 		const d = new Date();
-		return `${pad2(d.getDate())}${pad2(d.getMonth() + 1)}${d.getFullYear()}`;
+		return `${pad2(d.getDate())}/${pad2(d.getMonth() + 1)}/${d.getFullYear()}`;
 	}
+}
+
+function stripNonDigits(s) {
+	return (s || "").replace(/\D+/g, "");
 }
 
 async function callNumerology({ baseUrl, target, input }) {
@@ -262,7 +266,8 @@ function renderBook() {
 }
 
 async function submit() {
-	const input = $("#digits").value;
+	const rawInput = $("#digits").value;
+	const input = stripNonDigits(rawInput);
 	const targetRaw = $("#target").value;
 	state.error = null;
 	state.busy = true;
@@ -399,7 +404,7 @@ function scheduleDolphin() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-	$("#digits").value = defaultDateDigits();
+	$("#digits").value = defaultDateString();
 
 	renderBook();
 	renderVisitorCounter();
@@ -418,9 +423,6 @@ document.addEventListener("DOMContentLoaded", () => {
 		e.preventDefault();
 		startDolphinsOnce();
 		submit();
-	});
-	$("#digits").addEventListener("input", (e) => {
-		e.target.value = e.target.value.replace(/\D+/g, "");
 	});
 	$("#target").addEventListener("input", (e) => {
 		e.target.value = e.target.value.replace(/[^0-9-]/g, "");
